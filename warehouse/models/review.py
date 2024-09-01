@@ -42,6 +42,8 @@ class Review(TimeStampMixin):
         help_text=_(
             "Enter a rating for the book, ranging from 1 (worst) to 5 (best) stars."
         ),
+        blank=True,
+        null=True, 
     )
 
     comment = models.TextField(

@@ -10,11 +10,22 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+
+
+####################################################
+#                     PATHS                        #
+####################################################
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+####################################################
+#                   SECURITY                       #
+####################################################
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -28,7 +39,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
+####################################################
+#               APPLICATION DEFINITION             #
+####################################################
 
 DEFAULT_APPS = [
     'django.contrib.admin',
@@ -81,7 +94,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'goodreads.wsgi.application'
 
 
-# Database
+####################################################
+#                    DATABASES                     #
+####################################################
+
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
@@ -92,7 +108,10 @@ DATABASES = {
 }
 
 
-# Password validation
+####################################################
+#               PASSWORD VALIDATION                #
+####################################################
+
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -111,7 +130,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
+####################################################
+#               INTERNATIONALIZATION               #
+####################################################
+
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
@@ -123,23 +145,85 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+####################################################
+#               STATIC FILES (CSS, JS)             #
+####################################################
+
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
 
-# Default primary key field type
+
+####################################################
+#         DEFAULT PRIMARY KEY FIELD TYPE           #
+####################################################
+
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+####################################################
+#               AUTHENTICATION SETTINGS            #
+####################################################
+
 AUTH_USER_MODEL = 'account.User'
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+####################################################
+#                REST FRAMEWORK                    #
+####################################################
+
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+
+####################################################
+#                    LOGGING                       #
+####################################################
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'warehouse': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'account': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
 }

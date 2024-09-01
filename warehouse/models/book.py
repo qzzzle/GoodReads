@@ -24,12 +24,6 @@ class Book(TimeStampMixin):
         help_text=_("Enter a unique title."),
     )
 
-    author = models.CharField(
-        _("Author"),
-        max_length=255,
-        help_text=_("Enter the author's name."),
-    )
-
     summary = models.TextField(
         _("Summary"),
         null=True,
@@ -49,7 +43,7 @@ class Book(TimeStampMixin):
 
 
     def __str__(self) -> str:
-        return f"{self.title} by {self.author}"
+        return f"{self.title}"
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}: {self.title} by {self.author}"
+        return f"{self.__class__.__name__}: {self.title}"

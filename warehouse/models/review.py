@@ -7,12 +7,14 @@ from django.utils.translation import gettext_lazy as _
 
 from goodreads.mixins import TimeStampMixin
 
+
 class Review(TimeStampMixin):
     """
     Review Model
 
     Represents a review submitted by a user for a specific book. Each review
-    includes a rating (from 1 to 5 stars) and an optional text comment. The model also tracks the
+    includes a rating (from 1 to 5 stars) and an optional text comment. The model also
+    tracks the
     timestamp when the review was created.
     """
 
@@ -43,7 +45,7 @@ class Review(TimeStampMixin):
             "Enter a rating for the book, ranging from 1 (worst) to 5 (best) stars."
         ),
         blank=True,
-        null=True, 
+        null=True,
     )
 
     comment = models.TextField(
@@ -53,7 +55,7 @@ class Review(TimeStampMixin):
             "book."
         ),
         blank=True,
-        null=True, 
+        null=True,
     )
 
     class Meta:
@@ -71,4 +73,7 @@ class Review(TimeStampMixin):
         ]
 
     def __str__(self):
-        return f"{self.user.username if self.user else 'Unknown User'}'s review of {self.book.title}"
+        return (
+            f"{self.user.username if self.user else 'Unknown User'}'s review of"
+            f" {self.book.title}"
+        )

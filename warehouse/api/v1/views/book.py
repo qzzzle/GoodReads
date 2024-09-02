@@ -1,15 +1,21 @@
 """
 API views for listing and retrieving book details.
 
-Provides API endpoints for listing all books and retrieving detailed information about a specific book.
+Provides API endpoints for listing all books and retrieving detailed information about a
+specific book.
 """
 
 import logging
+
 from rest_framework import generics, permissions
+
 from warehouse.models import Book
-from ..serializers import BookSerializer, BookDetailSerializer
+
+from ..serializers import BookDetailSerializer, BookSerializer
+
 
 logger = logging.getLogger(__name__)
+
 
 class BookListAPIView(generics.ListAPIView):
     """
@@ -18,6 +24,7 @@ class BookListAPIView(generics.ListAPIView):
     - Accessible to authenticated users and read-only for others.
     - Uses BookSerializer to serialize book data.
     """
+
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -26,8 +33,9 @@ class BookListAPIView(generics.ListAPIView):
         try:
             return super().get(request, *args, **kwargs)
         except Exception as e:
-            logger.error(f"Error in listing books: {str(e)}")
+            logger.error("Error in listing books: %s", str(e))
             raise
+
 
 class BookDetailAPIView(generics.RetrieveAPIView):
     """
@@ -36,6 +44,7 @@ class BookDetailAPIView(generics.RetrieveAPIView):
     - Accessible to authenticated users and read-only for others.
     - Uses BookDetailSerializer to serialize detailed book data.
     """
+
     queryset = Book.objects.all()
     serializer_class = BookDetailSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -44,5 +53,9 @@ class BookDetailAPIView(generics.RetrieveAPIView):
         try:
             return super().get(request, *args, **kwargs)
         except Exception as e:
-            logger.error(f"Error in retrieving book details for book id {kwargs.get('pk')}: {str(e)}")
+            logger.error(
+                "Error in retrieving book details for book id %s: %s",
+                kwargs.get("pk"),
+                str(e),
+            )
             raise

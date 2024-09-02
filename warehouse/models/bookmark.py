@@ -7,14 +7,14 @@ from django.utils.translation import gettext_lazy as _
 
 from goodreads.mixins import TimeStampMixin
 
-class Bookmark(TimeStampMixin):
 
+class Bookmark(TimeStampMixin):
     """
     Bookmark Model
 
-    Represents a bookmark created by a user for a specific book. This model links a user 
-    to a book, allowing the user to keep track of books they are interested in. The model 
-    also tracks when the bookmark was created and last modified through the inherited 
+    Represents a bookmark created by a user for a specific book. This model links a user
+    to a book, allowing the user to keep track of books they are interested in. The model
+    also tracks when the bookmark was created and last modified through the inherited
     TimeStampMixin.
     """
 
@@ -35,10 +35,12 @@ class Bookmark(TimeStampMixin):
     )
 
     class Meta:
+        """meta class"""
+
         verbose_name = _("Bookmark")
         verbose_name_plural = _("Bookmarks")
-        unique_together = ('user', 'book')
+        unique_together = ("user", "book")
         db_table = "bookmarks"
 
     def __str__(self):
-        return f'{self.user.username} bookmarked {self.book.title}'
+        return f"{self.user.username} bookmarked {self.book.title}"

@@ -3,12 +3,17 @@ API views for submitting and updating reviews on books.
 """
 
 import logging
-from rest_framework import status, permissions
-from rest_framework.views import APIView
-from rest_framework.response import Response
+
 from django.shortcuts import get_object_or_404
+
+from rest_framework import permissions, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from warehouse.models import Book, Review
+
 from ..serializers import ReviewSerializer
+
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +22,7 @@ class SubmitReviewAPIView(APIView):
     """
     Handles the creation and updating of book reviews.
     """
+
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, book_id):
@@ -26,7 +32,7 @@ class SubmitReviewAPIView(APIView):
         Scenario:
         - If the review exists, updates both rating and comment.
         - If the review doesn't exist, creates a new one.
-        
+
         Logs the creation or update action.
 
         Returns:
@@ -38,8 +44,8 @@ class SubmitReviewAPIView(APIView):
         try:
             book = get_object_or_404(Book, id=book_id)
             data = request.data.copy()
-            data['book'] = book.id
-            data['user'] = request.user.id
+            data["book"] = book.id
+            data["user"] = request.user.id
 
             serializer = ReviewSerializer(data=data)
 
@@ -48,34 +54,49 @@ class SubmitReviewAPIView(APIView):
                     user=request.user,
                     book=book,
                     defaults={
-                        'rating': serializer.validated_data.get('rating'), 
-                        'comment': serializer.validated_data.get('comment'),
-                        }
+                        "rating": serializer.validated_data.get("rating"),
+                        "comment": serializer.validated_data.get("comment"),
+                    },
                 )
 
                 if created:
-                    logger.info(f"Review created for user {request.user.id} on book {book.id}")
+                    logger.info(
+                        "Review created for user %s on book %s",
+                        request.user.id,
+                        book.id,
+                    )
                     return Response(
                         serializer.data,
                         status=status.HTTP_201_CREATED,
                     )
-                
-                logger.info(f"Review updated for user {request.user.id} on book {book.id}")
+
+                logger.info(
+                    "Review updated for user %s on book %s", request.user.id, book.id
+                )
                 return Response(
                     serializer.data,
                     status=status.HTTP_200_OK,
                 )
 
-            logger.warning(f"Validation failed for review by user {request.user.id} on book {book.id}")
+            logger.warning(
+                "Validation failed for review by user %s on book %s",
+                request.user.id,
+                book.id,
+            )
             return Response(
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         except Exception as e:
-            logger.error(f"Error in creating/updating review for user {request.user.id} on book {book_id}: {str(e)}")
+            logger.error(
+                "Error in creating/updating review for user %s on book %s: %s",
+                request.user.id,
+                book_id,
+                str(e),
+            )
             return Response(
-                {'error': 'An error occurred during the review process.'},
+                {"error": "An error occurred during the review process."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -85,7 +106,7 @@ class SubmitReviewAPIView(APIView):
 
         Scenario:
         - Allows updating only the rating or comment without affecting the other field.
-        
+
         Logs the update action.
 
         Returns:
@@ -100,21 +121,32 @@ class SubmitReviewAPIView(APIView):
 
             if serializer.is_valid():
                 serializer.save()
-                logger.info(f"Review partially updated for user {request.user.id} on book {book_id}")
+                logger.info(
+                    "Review partially updated for user %s on book %s",
+                    request.user.id,
+                    book_id,
+                )
                 return Response(
                     serializer.data,
                     status=status.HTTP_200_OK,
-                    )
-            
-            logger.warning(f"Validation failed for user {request.user.id} on book {book_id}")
+                )
+
+            logger.warning(
+                "Validation failed for user %s on book %s", request.user.id, book_id
+            )
             return Response(
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
-                )
+            )
 
         except Exception as e:
-            logger.error(f"Error in partial update of review for user {request.user.id} on book {book_id}: {str(e)}")
+            logger.error(
+                "Error in partial update of review for user %s on book %s: %s",
+                request.user.id,
+                book_id,
+                str(e),
+            )
             return Response(
-                {'error': 'An error occurred during the review update process.'},
+                {"error": "An error occurred during the review update process."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                )
+            )

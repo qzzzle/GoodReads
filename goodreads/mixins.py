@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+
 class TimeStampMixin(models.Model):
     """
     Abstract Django Model that contains:
@@ -28,4 +29,6 @@ class TimeStampMixin(models.Model):
     )
 
     class Meta:
+        """meta class"""
+
         abstract = True

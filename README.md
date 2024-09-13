@@ -35,7 +35,7 @@ This project is a simplified version of the GoodReads website, implemented using
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/your-username/goodreads-clone.git
+    git clone https://github.com/qzzzle/goodreads-clone.git
     cd goodreads-clone
     ```
 
